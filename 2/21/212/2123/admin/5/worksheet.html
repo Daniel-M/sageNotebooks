@@ -1,0 +1,105 @@
+
+
+{{{id=2|
+mo=10;
+mr=0.2*mo;
+beta=0.12
+
+l=1
+eta=-0.2;
+
+g=9.8
+
+pho=(pi/180)*45
+tho=(pi/180)*60
+#tho=(pi/180)*(180-60)
+
+xo=pho
+yo=tho
+ao=(pi/180)*1
+#ao=0
+bo=0
+
+tf=30;
+
+m(t) = mr*(1-exp(-beta*t))+mo*exp(-beta*t);
+mdot(t)=derivative(m(t),t);
+
+print "m(t)=", m(t)
+print "mdot(t)=", mdot(t)
+
+M1=plot(m(t),(t,0,tf),color="green",title="Mass")
+#M2=plot(mdot(t),(t,0,tf),color="blue",title="Mass Variation")
+
+M1.show()
+#M2.show()
+
+from sage.calculus.desolvers import desolve_system_rk4
+A,B,x,y,t=var('A B x y t');
+
+dex = A
+dey = B
+deA = (A/(m(t)*l^2*sin(y)^2))*(eta*l*sin(y)^2-mdot(t)*l^2*sin(y)^2-2*m(t)*l*sin(y)*cos(y))
+deB = (1/(m(t)*l^2))*(eta*l^2*B-mdot(t)*l^2*B+m(t)*l^2*sin(y)*cos(y)*A^2+m(t)*g*l*sin(y))
+
+P=desolve_system_rk4([dex,dey,deA,deB],[x,y,A,B],ics=[0,xo,yo,ao,bo],ivar=t,end_points=tf,step=0.1)
+
+
+#Qt=[ [i,i] for i,j,k,m,n in P]
+
+Qph=[ [i,j] for i,j,k,m,n in P]
+Qth=[ [i,k] for i,j,k,m,n in P]
+
+Qphdph=[ [j,m] for i,j,k,m,n in P]
+Qthdth=[ [k,n] for i,j,k,m,n in P]
+
+Qx=[ [i,l*sin(k)*cos(j)] for i,j,k,m,n in P]
+Qy=[ [i,l*sin(k)*sin(j)] for i,j,k,m,n in P]
+Qz=[ [i,-l*cos(k)] for i,j,k,m,n in P]
+
+Qxy=[ [l*sin(k)*cos(j),l*sin(k)*sin(j)] for i,j,k,m,n in P]
+Qxz=[ [l*sin(k)*cos(j),-l*cos(k)] for i,j,k,m,n in P]
+Qyz=[ [l*sin(k)*sin(j),-l*cos(k)] for i,j,k,m,n in P]
+
+Qvel=[ [i,l^2*(n^2+m^2*sin(k))] for i,j,k,m,n in P]
+
+LPph=list_plot(Qph,plotjoined=true,title="ph vs t")
+LPth=list_plot(Qth,plotjoined=true,title="th vs t")
+
+LPphdph=list_plot(Qphdph,plotjoined=true,title="ph vs dotph")
+LPthdth=list_plot(Qthdth,plotjoined=true,title="th vs dotth")
+
+LPx=list_plot(Qx,plotjoined=true,title="x vs t")
+LPy=list_plot(Qy,plotjoined=true,title="y vs t")
+LPz=list_plot(Qz,plotjoined=true,title="z vs t")
+
+LPxy=list_plot(Qxy,plotjoined=true,title="x vs y")
+LPxz=list_plot(Qxz,plotjoined=true,title="x vs z")
+LPyz=list_plot(Qyz,plotjoined=true,title="y vs z")
+
+LPvel=list_plot(Qvel,plotjoined=true,title="Velocity vs t")
+
+LPph.show()
+LPth.show()
+
+LPphdph.show()
+LPthdth.show()
+
+LPx.show()
+LPy.show()
+LPz.show()
+
+LPxy.show()
+LPxz.show()
+LPyz.show()
+
+LPvel.show()
+///
+m(t)= 8.00000000000000*e^(-0.120000000000000*t) + 2.00000000000000
+mdot(t)= -0.960000000000000*e^(-0.120000000000000*t)
+}}}
+
+{{{id=3|
+
+///
+}}}

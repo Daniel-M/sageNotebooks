@@ -1,0 +1,41 @@
+
+
+{{{id=1|
+G = tetrahedron((0,-3.5,0), color='blue') + cube((0,-2,0),color=(.25,0,.5)) +\
+      octahedron(color='red') + dodecahedron((0,2,0), color='orange') +\
+      icosahedron(center=(0,4,0), color='yellow')
+///
+}}}
+
+{{{id=2|
+G.show(aspect_ratio=[1,1,1])
+///
+}}}
+
+{{{id=4|
+theta,z=var('theta,z')
+///
+}}}
+
+{{{id=5|
+a=cylindrical_plot3d(0.5,(theta,0,2*pi),(z,0,1),color='red')
+a.show()
+///
+}}}
+
+{{{id=7|
+from sage.plot.plot3d.shapes import Cylinder
+a = Cylinder(2, 1, color='red',axes=False)
+b = cylindrical_plot3d(1.5,(theta,0,2*pi),(z,0,1.02),color='black',axes=False)
+e = cylindrical_plot3d(0.05,(theta,0,2*pi),(z,0,1.02),color='black',axes=False)
+d = cylindrical_plot3d(1.8,(theta,0,2*pi),(z,0,1.02),color='black',axes=False)
+f = cylindrical_plot3d(2.01,(theta,0,2*pi),(z,0.5,0.55),color='green',axes=False)
+c=a+b+d+e+f;
+c.show(axes=False)
+///
+}}}
+
+{{{id=8|
+
+///
+}}}

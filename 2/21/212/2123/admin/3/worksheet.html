@@ -1,0 +1,139 @@
+
+
+{{{id=1|
+from sage.calculus.desolvers import desolve_system_rk4
+x,y,t=var('x y t')
+P=desolve_system_rk4([x*(1-y),-y*(1-x)],[x,y],ics=[0,0.5,2],ivar=t,end_points=20)
+Q=[ [i,j] for i,j,k in P]
+LP=list_plot(Q)
+LP.show()
+///
+}}}
+
+{{{id=3|
+mo=10;
+mr=0.2*mo;
+b=0.1;
+k=2;
+
+tf=120;
+
+x,y,t=var('x y t')
+
+m(t) = mr*(1-exp(-b*t))+mo*exp(-b*t)
+mdot(t)=derivative(m(t),t)
+print "m(t) = ", m(t)
+print "d/dt m(t) = ", mdot(t)
+
+M=plot(m(t),(t,0,tf),color="red")
+M.show()
+
+de1=-(mdot(t)/m(t))*y-(k/m(t))*x
+de2=y
+
+from sage.calculus.desolvers import desolve_system_rk4
+#x,y,t=var('x y t')
+t=var('t')
+P=desolve_system_rk4([de2,de1],[x,y],ics=[0,1,0],ivar=t,end_points=tf,step=0.1)
+Q=[ [i,j] for i,j,k in P]
+LP=list_plot(Q,plotjoined=true)
+(LP).show()
+///
+8.00000000000000*e^(-0.100000000000000*t) + 2.00000000000000
+-0.800000000000000*e^(-0.100000000000000*t)
+}}}
+
+{{{id=4|
+mo=10;
+mr=0.2*mo;
+b=0.1;
+k=2;
+eta=0.09;
+xo=1;
+
+tf=120;
+
+m(t) = mr*(1-exp(-b*t))+mo*exp(-b*t)
+mdot(t)=derivative(m(t),t)
+
+x,y,t=var('x y t')
+print "m(t) = ", m(t)
+print "d/dt m(t) = ", mdot(t)
+
+M=plot(m(t),(t,0,tf),color="red")
+M.show()
+
+de1=-(mdot(t)/m(t))*y-(k/m(t))*x-(eta/m(t))*y
+de2=y
+
+from sage.calculus.desolvers import desolve_system_rk4
+#x,y,t=var('x y t')
+t=var('t')
+P=desolve_system_rk4([de2,de1],[x,y],ics=[0,xo,0],ivar=t,end_points=tf,step=0.1)
+
+Q=[ [i,j] for i,j,k in P]
+R=[ [j,k] for i,j,k in P]
+
+LP=list_plot(Q,plotjoined=true)
+LR=list_plot(R,plotjoined=true)
+
+(LP).show()
+(LR).show()
+///
+8.00000000000000*e^(-0.100000000000000*t) + 2.00000000000000
+-0.800000000000000*e^(-0.100000000000000*t)
+}}}
+
+{{{id=5|
+l=1;
+mo=10;
+mr=0.2*mo;
+tau=3.0;
+g=9.8;
+eta=0.09;
+tho=(pi/180)*60;
+
+tf=150;
+
+m(t) = mr*(1-exp(-t/tau))+mo*exp(-t/tau)
+
+x,y,t=var('x y t')
+
+mdot(t)=derivative(m(t),t)
+print "m(t) = ", m(t)
+print "d/dt m(t) = ", mdot(t)
+
+M=plot(m(t),(t,0,tf),title="Mass variation $m(t)$",fontsize=16)
+M.show()
+
+de1=(1/(m(t)*l))*(-eta*l*y-g*m(t)*sin(x)-mdot(t)*l*y)
+de2=y
+
+from sage.calculus.desolvers import desolve_system_rk4
+#x,y,t=var('x y t')
+t=var('t')
+P=desolve_system_rk4([de2,de1],[x,y],ics=[0,tho,0],ivar=t,end_points=tf,step=0.1)
+
+Q=[ [i,j] for i,j,k in P]
+R=[ [j,k] for i,j,k in P]
+
+LP=list_plot(Q,plotjoined=true,axes_labels=['$t$','$\phi$'],title='Position',fontsize=16)
+LR=list_plot(R,plotjoined=true,axes_labels=['$\phi$','$\dot{\phi}$'],title='Phase diagram',fontsize=16)
+
+(LP).show()
+(LR).show()
+///
+m(t) =  8.00000000000000*e^(-0.333333333333333*t) + 2.00000000000000
+d/dt m(t) =  -2.66666666666667*e^(-0.333333333333333*t)
+}}}
+
+{{{id=6|
+
+///
+1.04719755119660
+}}}
+
+{{{id=7|
+
+///
+}}}

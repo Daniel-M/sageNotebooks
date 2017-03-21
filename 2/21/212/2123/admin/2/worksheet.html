@@ -1,0 +1,64 @@
+
+
+<p><span style="font-size: medium; font-family: tahoma, arial, helvetica, sans-serif;">I'm going to study the resonance fenomenon for an simple harmonic oscillator including the friction of the air.</span></p>
+<p><span style="font-size: medium; font-family: tahoma, arial, helvetica, sans-serif;">The model is just</span></p>
+<p><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: medium;">x'' + (k/m)x + (a/m)x' = sin(&sigma;t)</span></p>
+<p><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: medium;">where k is the spring's constant, m is the mass of the bob, a is the friction due to friction with air and sigma is the frecuency</span></p>
+<p><span style="font-family: tahoma, arial, helvetica, sans-serif; font-size: medium;">of the external force.</span></p>
+
+{{{id=1|
+#######################
+# Define numerical parameters
+#######################
+m=1;
+k=5;
+a=0.7;
+s=5;
+b=a/m;
+wo=sqrt(k/m);
+///
+}}}
+
+{{{id=3|
+sigma(w) = -((b*w)*(dirac_delta(w-s)-dirac_delta(w+s)))/((b*w)^2+(wo^2-w^2)^2)
+p=plot(sigma(w)*sigma(w),(w,-10,10))
+p.show()
+///
+}}}
+
+{{{id=7|
+integrate(sigma(w)*sigma(w),(w,-10,10))
+///
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "_sage_input_73.py", line 10, in <module>
+    exec compile(u'open("___code___.py","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("aW50ZWdyYXRlKHNpZ21hKHcpKnNpZ21hKHcpLCh3LC0xMCwxMCkp"),globals())+"\\n"); execfile(os.path.abspath("___code___.py"))' + '\n', '', 'single')
+  File "", line 1, in <module>
+    
+  File "/tmp/tmpbYBDlh/___code___.py", line 3, in <module>
+    exec compile(u'integrate(sigma(w)*sigma(w),(w,-_sage_const_10 ,_sage_const_10 ))' + '\n', '', 'single')
+  File "", line 1, in <module>
+    
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/misc/functional.py", line 663, in integral
+    return x.integral(*args, **kwds)
+  File "sage/symbolic/expression.pyx", line 10690, in sage.symbolic.expression.Expression.integral (build/cythonized/sage/symbolic/expression.cpp:52738)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/symbolic/integration/integral.py", line 761, in integrate
+    return definite_integral(expression, v, a, b, hold=hold)
+  File "sage/symbolic/function.pyx", line 992, in sage.symbolic.function.BuiltinFunction.__call__ (build/cythonized/sage/symbolic/function.cpp:10664)
+  File "sage/symbolic/function.pyx", line 500, in sage.symbolic.function.Function.__call__ (build/cythonized/sage/symbolic/function.cpp:6600)
+  File "sage/symbolic/function.pyx", line 1063, in sage.symbolic.function.BuiltinFunction._evalf_or_eval_ (build/cythonized/sage/symbolic/function.cpp:11321)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/symbolic/integration/integral.py", line 176, in _eval_
+    return integrator(*args)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/symbolic/integration/external.py", line 21, in maxima_integrator
+    result = maxima.sr_integral(expression, v, a, b)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/maxima_lib.py", line 776, in sr_integral
+    return max_to_sr(maxima_eval(([max_integrate],[sr_to_max(SR(a)) for a in args])))
+  File "sage/libs/ecl.pyx", line 792, in sage.libs.ecl.EclObject.__call__ (build/cythonized/sage/libs/ecl.c:7015)
+  File "sage/libs/ecl.pyx", line 365, in sage.libs.ecl.ecl_safe_apply (build/cythonized/sage/libs/ecl.c:4878)
+RuntimeError: ECL says: 1.0 is not of type (UNSIGNED-BYTE 15).
+}}}
+
+{{{id=9|
+
+///
+}}}

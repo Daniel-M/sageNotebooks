@@ -1,0 +1,116 @@
+
+
+{{{id=1|
+mo=10;
+mr=0.2*mo;
+beta=0.01
+
+l=1
+eta=0.09;
+
+g=9.8
+
+tho=(pi/180)*60
+
+xo = l*sin(tho)*cos((pi/180)*45)
+yo =  l*sin(tho)*sin((pi/180)*45)
+zo = l*cos(tho)
+ao = 1
+bo = 1
+co = 0
+
+
+tf=500;
+
+m(t) = mr*(1-exp(-beta*t))+mo*exp(-beta*t);
+mdot(t)=derivative(m(t),t);
+
+f(t)=(eta+mdot(t))/m(t);
+
+print "m(t)=", m(t)
+print "mdot(t)=", mdot(t)
+print "f(t)=", f(t)
+
+M1=plot(m(t),(t,0,tf),color="green",title="Mass")
+#M2=plot(mdot(t),(t,0,tf),color="blue",title="Mass Variation")
+M3=plot(f(t),(t,0,tf),color="red",title="Effective Friction")
+M1.show()
+#M2.show()
+M3.show()
+
+from sage.calculus.desolvers import desolve_system_rk4
+a,b,c,x,y,z,t=var('a b c x y z t');
+
+dex=a
+dey=b
+dez=c
+dea=-f(t)*a
+deb=-f(t)*b
+#dec=-f(t)*c-(g/(m(t)*l))*sin(z)
+dec=-f(t)*c-g
+
+P=desolve_system_rk4([dex,dey,dez,dea,deb,dec],[x,y,z,a,b,c],ics=[0,xo,yo,zo,ao,bo,co],ivar=t,end_points=tf,step=0.1)
+
+
+#Q1=[ [i,i] for i,j,k,m,n,o,p in P]
+Q2=[ [i,j] for i,j,k,m,n,o,p in P]
+Q3=[ [i,k] for i,j,k,m,n,o,p in P]
+Q4=[ [i,m] for i,j,k,m,n,o,p in P]
+Q5=[ [n,j] for i,j,k,m,n,o,p in P]
+Q6=[ [o,k] for i,j,k,m,n,o,p in P]
+Q7=[ [p,m] for i,j,k,m,n,o,p in P]
+Q8=[ [j,k] for i,j,k,m,n,o,p in P]
+
+
+#LP1=list_plot(Q1,plotjoined=true)
+LP2=list_plot(Q2,plotjoined=true,title="x vs t")
+LP3=list_plot(Q3,plotjoined=true,title="y vs t")
+LP4=list_plot(Q4,plotjoined=true,title="z vs t")
+LP5=list_plot(Q5,plotjoined=true,title="xdot vs x")
+LP6=list_plot(Q6,plotjoined=true,title="ydot vs y")
+LP7=list_plot(Q7,plotjoined=true,title="zdot vs z")
+LP8=list_plot(Q8,plotjoined=true,title="x vs y")
+
+
+#(LP1).show()
+(LP2).show()
+(LP3).show()
+(LP4).show()
+(LP5).show()
+(LP6).show()
+(LP7).show()
+(LP8).show()
+///
+m(t)= 8.00000000000000*e^(-0.0100000000000000*t) + 2.00000000000000
+mdot(t)= -0.0800000000000000*e^(-0.0100000000000000*t)
+f(t)= (-0.0800000000000000*e^(-0.0100000000000000*t) + 0.0900000000000000)/(8.00000000000000*e^(-0.0100000000000000*t) + 2.00000000000000)
+^C
+^C
+^C
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+
+Traceback (most recent call last):
+  File "sage/ext/interrupt.pyx", line 183, in sage.ext.interrupt.sage_python_check_interrupt (build/cythonized/sage/ext/interrupt.c:1683)
+  File "sage/ext/interrupt.pyx", line 71, in sage.ext.interrupt.sig_raise_exception (build/cythonized/sage/ext/interrupt.c:817)
+KeyboardInterrupt
+__SAGE__
+}}}
+
+{{{id=2|
+from sage.calculus.desolvers import desolve_system_rk4
+x,y,t=var('x y t')
+P=desolve_system_rk4([y,-10*sin(x)],[x,y],ics=[0,0,2],ivar=t,end_points=20)
+Q=[ [i,j] for i,j,k in P]
+Q1=[ [j,k] for i,j,k in P]
+LP=list_plot(Q,plotjoined=true)
+LP1=list_plot(Q1,plotjoined=true)
+LP.show()
+LP1.show()
+///
+}}}
+
+{{{id=3|
+
+///
+}}}

@@ -1,0 +1,393 @@
+
+
+{{{id=29|
+\section{Gravity Jump With Friction}
+
+Define the first parameters neeeded to numerical calculations for the propossed solution to  the differential equation
+
+\begin{equation}
+\ddot{x} + \beta \, \dot{x} - \gamma \, x + g = 0
+\end{equation}
+
+Where $\beta \, \dot{x}$ corresponds to a generic term of kinetic friction. 
+Where $-\gamma \, x + g $ corresponds to first order gravitational force
+
+Starting with the ansatz $x(t) = A e^{-k t} + C$  we arrive to
+
+\begin{equation}
+x(t) = A_{1} e^{-k_{1}t} + A_{2} e^{-k_{2}t} + C
+\end{equation}
+
+where
+\begin{eqnarray}
+k_{1} &=& \frac{1}{2}\left( \beta + \sqrt{\beta^{2}+4\gamma}\right)\\
+k_{2} &=& \frac{1}{2}\left( \beta - \sqrt{\beta^{2}+4\gamma}\right)\\
+C     &=& \frac{g}{\gamma}
+\end{eqnarray}
+
+To find the values of $A_{1}$ and $A_{2}$ we use the values of $x(t),\dot{x}(t)$ at $t=0$. Clearly $x(0)=x_{0}$ and $\dot{x}(0)=v_{0}$, so 
+
+\begin{eqnarray}
+x_{0} &=& A_{1}+A_{2}+C\\
+v_{0} &=& -k_{1}A_{1}-k_{2}A_{2}
+\end{eqnarray}
+
+In matrix form we have the problem,
+
+\begin{eqnarray}
+\left[ \begin{array}{cc}
+x_{0} \\
+v_{0} \end{array} \right]
+&=&
+\left[ \begin{array}{cc}
+1 & 1 \\
+-k_{1} & -k_{2} \end{array} \right]
+\left[ \begin{array}{cc}
+A_{1} \\
+A_{2} \end{array} \right]
++
+\left[ \begin{array}{cc}
+C \\
+0 \end{array} \right] \\
+\left[ \begin{array}{cc}
+x_{0} - C\\
+v_{0} \end{array} \right]
+&=&
+\left[ \begin{array}{cc}
+1 & 1 \\
+-k_{1} & -k_{2} \end{array} \right]
+\left[ \begin{array}{cc}
+A_{1} \\
+A_{2} \end{array} \right]
+\end{eqnarray}
+///
+}}}
+
+{{{id=1|
+##########################
+# Define the right parameters
+##########################
+m=5 # kg
+xo=0 # m
+vo=30 # m/s
+alpha=0.7
+g=9.8  # m/s^2
+Rt=6371000 # m, 6371 km mean radious of earth
+beta=alpha/m
+gamma=(2*g)/Rt
+k1=(1/2)*(beta + sqrt(beta*beta+4*gamma))
+k2=(1/2)*(beta - sqrt(beta*beta+4*gamma))
+///
+}}}
+
+{{{id=18|
+#########################
+# Calculate the values of the constants for the solution
+#########################
+A=matrix([[1,1],[-k1,-k2]])
+B=A.inverse()
+v=vector((xo-g/gamma,vo))
+vsol=B*v
+A1 = simplify(vsol[0])
+A2 = simplify(vsol[1])
+///
+}}}
+
+{{{id=14|
+##########################
+# The numerical calculation is performed here
+##########################
+# x(t)=(1/(alpha-beta))*( (((g*k2)/gamma)-vo)*exp(-k1*t) +(-((g*k1)/gamma)+vo)*exp(-k2*t)) + g/gamma
+x(t)=A1*exp(-k1*t) +A2*exp(-k2*t) + g/gamma
+nsol=find_root(x(t),0.1,1000)
+##########################
+# Print the parameters on screen
+##########################
+print "m is", m,"kg"
+print "xo is", xo,"m"
+print "vo is", vo,"m/s"
+print "alpha is ",alpha,"kg/s"
+print "g is",g,"m/s^2"
+print "Rt is",Rt,"m"
+print "beta is",beta
+print "gamma is",gamma
+print "k1 is",k1
+print "k2 is",k2
+print "\nThe numerical form of the solution for the above parameters is\n",x(t),"\n"
+print "Time of flight is", nsol , "seconds\n\n"
+print "Hint: escape velocity is", sqrt(2*g*Rt),"m/s  or ",sqrt(2*g*Rt)*(3600/1000),"km/h"
+p=plot(x(t),(t,0,nsol),xmin=0)
+p.show()
+///
+m is 5 kg
+xo is 0 m
+vo is 30 m/s
+alpha is  0.700000000000000 kg/s
+g is 9.80000000000000 m/s^2
+Rt is 6371000 m
+beta is 0.140000000000000
+gamma is 3.07644011929054e-6
+k1 is 0.140021971124207
+k2 is -0.0000219711242070847
+
+The numerical form of the solution for the above parameters is
+-3.18478601684188e6*e^(0.0000219711242070847*t) - 713.983158117400*e^(-0.140021971124207*t) + 3.18550000000000e6 
+
+Time of flight is 5.4388504691 seconds
+
+
+Hint: escape velocity is 11174.5961895721 m/s  or  40228.5462824597 km/h
+}}}
+
+{{{id=26|
+for vo in [10,20,30,50,70,100,150,200,300,500,2000,5000,9624.6575,11174.5961895721]:
+    A=matrix([[1,1],[-k1,-k2]])
+    B=A.inverse()
+    v=vector((xo-g/gamma,vo))
+    vsol=B*v
+    A1 = simplify(vsol[0])
+    A2 = simplify(vsol[1])
+    x(t)=A1*exp(-k1*t) +A2*exp(-k2*t) + g/gamma
+    nsol=find_root(x(t),0.1,2000)
+    print "Flight time",nsol,"s for vo",vo,"m/s or ", vo*(3600.0/1000.0),"km/h"
+    p+=plot(x(t),(t,0,nsol),xmin=0)
+p.show()
+///
+Flight time 1.95201991546 s for vo 10 m/s or  36.0000000000000 km/h
+Flight time 3.75427804197 s for vo 20 m/s or  72.0000000000000 km/h
+Flight time 5.43885046909 s for vo 30 m/s or  108.000000000000 km/h
+Flight time 8.54126992902 s for vo 50 m/s or  180.000000000000 km/h
+Flight time 11.3833602104 s for vo 70 m/s or  252.000000000000 km/h
+Flight time 15.3148458433 s for vo 100 m/s or  360.000000000000 km/h
+Flight time 21.3150513729 s for vo 150 m/s or  540.000000000000 km/h
+Flight time 26.918400456 s for vo 200 m/s or  720.000000000000 km/h
+Flight time 37.5676657464 s for vo 300 m/s or  1080.00000000000 km/h
+Flight time 58.1733361581 s for vo 500 m/s or  1800.00000000000 km/h
+Flight time 211.681722184 s for vo 2000 m/s or  7200.00000000000 km/h
+Flight time 520.226441489 s for vo 5000 m/s or  18000.0000000000 km/h
+Flight time 999.999990578 s for vo 9624.65750000000 m/s or  34648.7670000000 km/h
+Flight time 1161.93270196 s for vo 11174.5961895721 m/s or  40228.5462824596 km/h
+}}}
+
+{{{id=28|
+A=matrix([[1,1],[-k1,-k2]])
+B=A.inverse()
+v=vector((xo-g/gamma,12000))
+vsol=B*v
+A1 = simplify(vsol[0])
+A2 = simplify(vsol[1])
+x(t)=A1*exp(-k1*t) +A2*exp(-k2*t) + g/gamma
+plot(x(t),(t,0,1500),xmin=0)
+///
+}}}
+
+{{{id=17|
+#####################################
+# Exact solution for A1 and A2, then exact solution for x(t)
+#####################################
+k1,k2=var('k1,k2')
+A1,A2=var('A1,A2')
+xo,g,gamma,vo=var("xo,g,gamma,vo")
+A=matrix([[1,1],[-k1,-k2]])
+B=A.inverse()
+#print "Matrix A is \n", A, "\n"
+#print "Matrix A.inverse() is\n", B, "\n"
+#print "Product is\n", A*B
+v=vector((xo-g/gamma,vo))
+vsol=B*v
+A1 = simplify(vsol[0])
+A2 = simplify(vsol[1])
+print "\nThe exact solution to the parameters A1 and A2 are:"
+print "A1 =",A1
+print "A2 =",A2
+///
+The exact solution to the parameters A1 and A2 are:
+A1 = -(xo - g/gamma)*(k1/(k1 - k2) - 1) - vo/(k1 - k2)
+A2 = k1*(xo - g/gamma)/(k1 - k2) + vo/(k1 - k2)
+}}}
+
+{{{id=33|
+\section{Gravity Projectile With Friction}
+
+The Newton's law allow us to write,
+
+\begin{equation}
+m \ddot{\vec{x}} = - \alpha \dot{\vec{x}} - \frac{\gamma M_{T}m}{x^{2}}\hat{x}
+\end{equation}
+
+Where $\alpha\, \dot{\vec{x}}$ corresponds to a generic term of kinetic friction, $\gamma$ corresponds to Cavendish gravitational constant
+
+\begin{equation}
+\vec{x} = x\hat{i}+y\hat{j}
+\end{equation}
+
+Produces the following equations
+
+\begin{eqnarray}
+\ddot{x} &=& -\frac{\alpha}{m}\dot{x} \\
+\ddot{y} &=& -\frac{\alpha}{m}\dot{y} - \frac{\gamma M_{T}}{y^{2}}
+\end{eqnarray}
+///
+}}}
+
+{{{id=34|
+Letting $y=R_{earth}+h$ we can get the following replacement in the system of equations above
+
+
+\begin{eqnarray}
+\ddot{x} &=& -\frac{\alpha}{m}\dot{x} \\
+\ddot{h} &=& -\frac{\alpha}{m}\dot{h} - \frac{\gamma M_{T}}{(R_{earth}+h)^{2}}
+\end{eqnarray}
+///
+}}}
+
+{{{id=35|
+But we can obtain the following series expansion for
+
+\begin{equation}
+\frac{1}{(1+x)^{2}} \approx 1 - 2x + 3x^{2}-4x^{3}+\ldots
+\end{equation}
+///
+}}}
+
+{{{id=36|
+We can use this to write
+
+\begin{equation}
+\frac{1}{(R_{earth}+h)^{2}} = \frac{1}{R_{earth}^{2}}\frac{1}{(1+\frac{h}{R_{earth}})^{2}}
+\end{equation}
+
+And expand the fraction in terms of the geometric series as,
+
+\begin{equation}
+\frac{1}{(1+\frac{h}{R_{earth}})^{2}} \approx 1 - 2\left(\frac{h}{R_{earth}}\right) + 3\left(\frac{h}{R_{earth}}\right)^{2}-4\left(\frac{h}{R_{earth}}\right)^{3}+\ldots
+\end{equation}
+///
+}}}
+
+{{{id=37|
+Using those results we get the following set of differential equations
+
+\begin{eqnarray}
+\ddot{x} &=& -\frac{\alpha}{m}\dot{x} \\
+\ddot{h} &=& -\frac{\alpha}{m}\dot{h} - \frac{\gamma M_{T}}{R_{earth}^{2}}\left(1 - 2\left(\frac{h}{R_{earth}}\right) + 3\left(\frac{h}{R_{earth}}\right)^{2}-4\left(\frac{h}{R_{earth}}\right)^{3}+\ldots\right) \\
+g &=& \frac{\gamma M_{T}}{R_{earth}^{2}}
+\end{eqnarray}
+///
+}}}
+
+{{{id=38|
+Taking the first order approximation,
+
+\begin{eqnarray}
+\ddot{x} &=& -\frac{\alpha}{m}\dot{x} \\
+\ddot{h} &=& -\frac{\alpha}{m}\dot{h} - g\left(1 - 2\left(\frac{h}{R_{earth}}\right)\right)
+\end{eqnarray}
+
+We are left with
+
+\begin{eqnarray}
+\ddot{x} &=& -\frac{\alpha}{m}\dot{x} \\
+\ddot{h} &=& -\frac{\alpha}{m}\dot{h} + \frac{2g}{R_{earth}}h -g
+\end{eqnarray}
+///
+}}}
+
+{{{id=39|
+x,a,b,c=var('x a b g')
+assume(a>0)
+assume(b>0)
+assume(c>0)
+y=function('y')(x)
+de1=diff(y,x,2) == -b*diff(y,x)
+de2=diff(y,x,2) == -b*diff(y,x) + a*y - c
+///
+}}}
+
+{{{id=40|
+latex(desolve(de1,y,ivar=x))
+///
+K_{2} e^{\left(-b x\right)} + K_{1}
+}}}
+
+{{{id=41|
+latex(desolve(de2,y,ivar=x))
+///
+K_{2} e^{\left(-\frac{1}{2} \, {\left(b + \sqrt{b^{2} + 4 \, a}\right)} x\right)} + K_{1} e^{\left(-\frac{1}{2} \, {\left(b - \sqrt{b^{2} + 4 \, a}\right)} x\right)} + \frac{g}{a}
+}}}
+
+{{{id=42|
+\begin{eqnarray}
+x(t) &=& A_{2} e^{\left(-\beta t\right)} + A_{1} \\
+h(t) &=& K_{2} e^{\left(-\frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \, a}\right)}
+t\right)} + K_{1} e^{\left(-\frac{1}{2} \, {\left(\beta - \sqrt{\beta^{2} + 4 \,
+a}\right)} t\right)} + \frac{R_{earth}}{2}\\
+\beta &=& \frac{\alpha}{m}\\
+a &=& \frac{2g}{R_{earth}}
+\end{eqnarray}
+///
+}}}
+
+{{{id=43|
+From the initial conditions,
+
+\begin{eqnarray}
+x(0) &=& A_{2} + A_{1} \\
+\dot{x}(0) &=& -\beta A_{2}
+\end{eqnarray}
+
+\begin{eqnarray}
+h(0) &=& K_{2} + K_{1} + \frac{R_{earth}}{2}\\
+\dot{h}(0) &=& -\frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)} K_{2} \-\frac{1}{2} \, {\left(\beta - \sqrt{\beta^{2} + 4 \,
+a}\right)}K_{1}
+\end{eqnarray}
+///
+}}}
+
+{{{id=45|
+$x_{0}=0$
+\begin{eqnarray}
+A_{2} &=& -\frac{\dot{x}_{0}}{\beta}\\
+A_{1} &=& \frac{\dot{x}_{0}}{\beta}
+\end{eqnarray}
+///
+}}}
+
+{{{id=46|
+$h_{0}=0$
+\begin{eqnarray}
+K_{2} + K_{1} &=& - \frac{R_{earth}}{2}\\
+K_{2} &=& -K_{1} - \frac{R_{earth}}{2}\\
+\end{eqnarray}
+///
+}}}
+
+{{{id=47|
+\begin{eqnarray}
+\dot{h}_{0} &=& -\frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)} \left(K_{1} - \frac{R_{earth}}{2}\right) -\frac{1}{2} \, {\left(\beta - \sqrt{\beta^{2} + 4 \,
+a}\right)}K_{1} \\
+\dot{h}_{0} - \frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)}  \frac{R_{earth}}{2} &=& -\frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)} K_{1} -\frac{1}{2} \, {\left(\beta - \sqrt{\beta^{2} + 4 \,
+a}\right)}K_{1} \\
+\dot{h}_{0} - \frac{1}{2} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)}  \frac{R_{earth}}{2} &=& - \beta K_{1} \\
+\end{eqnarray}
+///
+}}}
+
+{{{id=48|
+\begin{eqnarray}
+K_{2} &=& K_{1} - \frac{R_{earth}}{2}\\
+K_{2} &=& -\frac{\dot{h}_{0}}{\beta} + \frac{1}{4\beta} \, {\left(\beta + \sqrt{\beta^{2} + 4 \,
+a}\right)} R_{earth}  - \frac{R_{earth}}{2}
+\end{eqnarray}
+///
+}}}
+
+{{{id=49|
+
+///
+}}}

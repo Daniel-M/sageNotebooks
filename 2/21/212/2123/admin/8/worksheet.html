@@ -1,0 +1,178 @@
+
+
+{{{id=1|
+# Defining constants
+ton=1.5e-3;
+toff=15e-3;
+T=3e-3;
+L=5;
+A=1e-3;
+///
+}}}
+
+{{{id=2|
+# Hollingworth-Baylor's way
+def hb_w(t,L):
+    if t<T :
+        ret = 0
+    else :
+        ret = A*((1-exp(-(t-T)/ton))^L)*exp(-(t-T)/toff)
+    return ret
+///
+}}}
+
+{{{id=3|
+# Robertson's way
+def r_w(t,a):
+    if t<T :
+        ret= 0
+    else :
+#        ret= a - A*(exp(-t/toff)-exp(-t/ton))
+        ret = a*10^(A*( exp(-(t-T)/toff)-exp(-(t-T)/ton) ))
+    return ret
+///
+}}}
+
+{{{id=4|
+# Uttenweiler way
+def u_w(t):
+    if t<T :
+        ret = 0
+    else :
+        ret = A*((1-exp(-(t-T)/ton))^1)*exp(-(t-T)/toff)
+    return ret
+///
+}}}
+
+{{{id=5|
+t=var('t')
+hb_p=plot(hb_w(t,L),(t,T,20*T),title="Hollingworth-Baylor",color="blue",axes_labels=['$t$','Ca$^{2+}(t)$'],legend_label="$J_{Ca}(t)=R(1-e^{-(t-T)/t_{on}})^{L}e^{-(t-T)/t_{off}}$",fontsize=16)
+hb_p.set_legend_options(font_size=18)
+hb_p.show()
+hb_p.get_minmax_data()
+///
+<html><script type="math/tex; mode=display">\newcommand{\Bold}[1]{\mathbf{#1}}\left\{\verb|xmin| : 0.003, \verb|ymin| : -0.0, \verb|ymax| : 0.000611135330855, \verb|xmax| : 0.06\right\}</script></html>
+}}}
+
+{{{id=6|
+r_p=plot(r_w(t,A),(t,T,20*T),title="Robertson-modified",color="darkgreen",axes_labels=['$t$','Ca$^{2+}(t)$'],legend_label="$J_{Ca}(t)=[Ca]_{rest}10^{(A(e^{-t/t_{off}}-e^{-t/t_{on}}))}$",fontsize=16)
+r_p.set_legend_options(font_size=18)
+r_p.show()
+r_p.get_minmax_data()
+///
+<html><script type="math/tex; mode=display">\newcommand{\Bold}[1]{\mathbf{#1}}\left\{\verb|xmin| : 0.003, \verb|ymin| : 0.001, \verb|ymax| : 0.00100160569751, \verb|xmax| : 0.06\right\}</script></html>
+}}}
+
+{{{id=21|
+u_p=plot(u_w(t),(t,T,20*T),title="Uttenweiler",color="red",axes_labels=['$t$','Ca$^{2+}(t)$'],legend_label="$J_{Ca}(t)=J_{max}(1-e^{-t/t_{on}})e^{-t/t_{off}}$",fontsize=16)
+u_p.set_legend_options(font_size=18)
+u_p.show()
+u_p.get_minmax_data()
+///
+<html><script type="math/tex; mode=display">\newcommand{\Bold}[1]{\mathbf{#1}}\left\{\verb|xmin| : 0.003, \verb|ymin| : 0.0, \verb|ymax| : 0.000715264904145, \verb|xmax| : 0.06\right\}</script></html>
+}}}
+
+{{{id=17|
+listplot=[hb_w(t,L)/0.000611273123518,r_w(t,A)/0.00100160580869,u_w(t)/0.0007152666472219935]
+g=plot(listplot[0],(t,T,10*T),legend_label="Hollingworth-Baylor",color='blue',fontsize=18)
+g+=plot(listplot[1],(t,T,10*T),legend_label="Robertson",color="darkgreen",fontsize=18)
+g+=plot(listplot[2],(t,T,10*T),legend_label="Uttenweiler",color="red",fontsize=18)
+g.set_legend_options(font_size=18)
+g.show(title="Normalized $J_{Ca}(t)$ time course comparison")
+#gr=hb_p+r_p+u_p
+#gr.set_legend_options(font_size=18)
+#gr.show(title="$Normalized J_{Ca}(t)$ time course comparison")
+///
+}}}
+
+{{{id=9|
+#p=plot(0,(t,T,2*T))
+p=plot(r2_w(t,A),(t,T,20*T),color='orange',legend_label="Robertson-Mod")
+for i in range(1,21,2):
+#    p+=plot(hb_w(t,i),(t,T,20*T),legend_label="Baylor L="+ str(i),rgbcolor=(i/4,5*i/3,3/4))
+    p+=plot(hb_w(t,i),(t,T,20*T),legend_label="Baylor L="+ str(i),color=rainbow(20)[i])
+p+=plot(u_w(t),(t,T,20*T),color='red',legend_label="Uttenweiler")
+#p+=plot(r2_w(t,A),(t,T,20*T),color='orange',legend_label="Robertson-Mod")
+p.show()
+///
+}}}
+
+{{{id=10|
+plot(u_w(t),hb,(t,0,10*T))
+///
+[1, 3]
+}}}
+
+{{{id=11|
+J(t,D)=A*((1-exp(-t/ton))^D)*exp(-t/toff)
+///
+}}}
+
+{{{id=12|
+f(t)=derivative(J(t,5),t)
+f(t)
+///
+<html><script type="math/tex; mode=display">\newcommand{\Bold}[1]{\mathbf{#1}}0.0666666666666667 \, {\left(e^{\left(-666.666666666667 \, t\right)} - 1\right)}^{5} e^{\left(-66.6666666666667 \, t\right)} + 3.33333333333333 \, {\left(e^{\left(-666.666666666667 \, t\right)} - 1\right)}^{4} e^{\left(-733.333333333333 \, t\right)}</script></html>
+}}}
+
+{{{id=13|
+graph1=plot(J(t,1),(t,0,10*T),color='blue')
+graph1+=plot(J(t,3),(t,0,10*T),color='orange')
+graph1+=plot(J(t,5),(t,0,10*T),color='red')
+graph2=plot(derivative(J(t,1),t),(t,0,10*T),color='cyan')
+graph2+=plot(derivative(J(t,3),t),(t,0,10*T),color='yellow')
+graph2+=plot(derivative(J(t,5),t),(t,0,10*T),color='pink')
+graph1.show()
+graph2.show()
+///
+}}}
+
+{{{id=14|
+solve(derivative(J(t,3),t)==0.3*A,t)
+///
+^CTraceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "_sage_input_166.py", line 10, in <module>
+    exec compile(u'open("___code___.py","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("c29sdmUoZGVyaXZhdGl2ZShKKHQsMyksdCk9PTAuMypBLHQp"),globals())+"\\n"); execfile(os.path.abspath("___code___.py"))' + '\n', '', 'single')
+  File "", line 1, in <module>
+    
+  File "/tmp/tmpny_B30/___code___.py", line 3, in <module>
+    exec compile(u'solve(derivative(J(t,_sage_const_3 ),t)==_sage_const_0p3 *A,t)' + '\n', '', 'single')
+  File "", line 1, in <module>
+    
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/symbolic/relation.py", line 798, in solve
+    ans = f.solve(*args,**kwds)
+  File "sage/symbolic/expression.pyx", line 9978, in sage.symbolic.expression.Expression.solve (build/cythonized/sage/symbolic/expression.cpp:47845)
+  File "sage/symbolic/expression.pyx", line 9971, in sage.symbolic.expression.Expression.solve (build/cythonized/sage/symbolic/expression.cpp:47699)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/interface.py", line 559, in __call__
+    return self._obj.parent().function_call(self._name, [self._obj] + list(args), kwds)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/interface.py", line 460, in function_call
+    return self.new(s)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/interface.py", line 235, in new
+    return self(code)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/interface.py", line 170, in __call__
+    return cls(self, x, name=name)
+  File "/home/damejia/opt/sage-6.6-x86_64-Linux/local/lib/python2.7/site-packages/sage/interfaces/interface.py", line 597, in __init__
+    raise TypeError(x)
+TypeError: ECL says: Console interrupt.
+__SAGE__
+}}}
+
+{{{id=15|
+plot(r2_w(t,0.1e-6),(t,T,20*T),color='orange',legend_label="Robertson-Mod")
+///
+}}}
+
+{{{id=16|
+k=plot(hb_w(t,0.5),(t,T,20*T),legend_label="Baylor L=0.5",color='red')
+k+=plot(hb_w(t,0.1),(t,T,20*T),legend_label="Baylor L=0.1",color='pink')
+k+=plot(hb_w(t,1),(t,T,20*T),legend_label="Baylor L=1",color='blue')
+k+=plot(u_w(t),(t,T,20*T),color='orange',legend_label="Uttenweiler")
+k.show()
+///
+}}}
+
+{{{id=18|
+
+///
+}}}

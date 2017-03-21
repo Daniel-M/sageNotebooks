@@ -1,0 +1,6 @@
+(lp1
+VWorksheet 'Untitled' (2017-03-21 at 13:33)\u000a{{{id=1|\u000av = [(sin(x),x) for x in srange(-2*float(pi),2*float(pi),0.1)]\u000a///\u000a}}}
+p2
+aVWorksheet 'Untitled' (2017-03-21 at 13:33)\u000a{{{id=2|\u000aline(v)\u000a///\u000a}}}
+p3
+a.
