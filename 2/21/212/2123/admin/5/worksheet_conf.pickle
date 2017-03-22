@@ -1,14 +1,14 @@
 (dp1
 S'system'
 p2
-S'sage'
+Vlatex
 p3
 sS'saved_by_info'
 p4
 (dp5
-S'1444158568'
+S'1490153605'
 p6
-Vadmin
+S'admin'
 p7
 ssS'tags'
 p8
@@ -52,7 +52,7 @@ sS'last_change'
 p27
 (S'admin'
 p28
-F1433228138.272665
+F1490152714.328752
 tp29
 sS'worksheet_that_was_published'
 p30

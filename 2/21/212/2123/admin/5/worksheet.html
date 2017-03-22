@@ -1,7 +1,80 @@
 
 
+{{{id=4|
+\providecommand{\keywords}[1]{\newline \textit{\textit{Keywords: }} #1}
+
+\newcommand{\der}[2]{\frac{\mathrm{d}^{#2}}{\mathrm{d}^{#2} #1}}
+
+\title{\bf Mass varying pendulum: A numerical study}
+\author{Daniel Mejía R.}
+\maketitle
+\begin{abstract}
+Hey Listen!
+\keywords{stuff,things}
+\end{abstract}
+
+\tableofcontents
+
+\section{Equations of motion}
+
+\subsection{System of coordinates and position vector}
+Using spherical coordinates
+
+\begin{eqnarray}
+x &=& r \cos{\varphi}\sin{\theta}.\\
+y &=& r \sin{\varphi}\sin{\theta}.\\
+z &=& r \cos{\theta}.
+\end{eqnarray}
+
+With $r=L$.
+
+\begin{equation}
+\vec{r} = L \left\{ \cos{\varphi}\sin{\theta}\,\hat{i} + \sin{\varphi}\sin{\theta}\,\hat{j} + \cos{\theta}\,\hat{k} \right\} 
+\end{equation}
+
+\begin{equation}
+\der{t}{}\vec{r} = L \left\{ \der{t}{}\left(\cos{\varphi}\sin{\theta}\right)\,\hat{i} + \der{t}{}\left(\sin{\varphi}\sin{\theta}\right)\,\hat{j} + \der{t}{}\left(\cos{\theta}\right)\,\hat{k} \right\} 
+\end{equation}
+
+\begin{eqnarray}
+\der{t}{} \left(\cos{\varphi}\sin{\theta}\right) &=& \left(\der{t}{}\cos{\varphi}\right)\sin{\theta} + \cos{\varphi}\left(\der{t}{}\sin{\theta}\right)\\
+&=& \left(-\sin{\varphi}\der{t}{}\varphi\right)\sin{\theta} + \cos{\varphi}\left(\cos{\theta}\der{t}{}\theta\right)
+\end{eqnarray}
+
+
+\begin{eqnarray}
+\der{t}{} \left(\sin{\varphi}\sin{\theta}\right) &=& \left(\der{t}{}\sin{\varphi}\right)\sin{\theta} + \sin{\varphi}\left(\der{t}{}\sin{\theta}\right)\\
+&=& \left(\cos{\varphi}\der{t}{}\varphi\right)\sin{\theta} + \sin{\varphi}\left(\cos{\theta}\der{t}{}\theta\right)
+\end{eqnarray}
+
+\begin{eqnarray}
+\der{t}{} \left(\cos{\theta}\right) &=& -\sin{\theta}\der{t}{}\theta 
+\end{eqnarray}
+
+\begin{equation}
+{\der{t}{}\theta}^{2} \cos\left(\varphi\right)^{2} \cos\left(\theta\right)^{2} + {\der{t}{}\theta}^{2} \cos\left(\theta\right)^{2} \sin\left(\varphi\right)^{2} + {\der{t}{}\varphi}^{2} \cos\left(\varphi\right)^{2} \sin\left(\theta\right)^{2} + {\der{t}{}\varphi}^{2} \sin\left(\varphi\right)^{2} \sin\left(\theta\right)^{2} + {\der{t}{}\theta}^{2} \sin\left(\theta\right)^{2}
+\end{equation}
+///
+}}}
+
+{{{id=5|
+var('t p tt pp')
+(-sin(p)*pp*sin(t) + cos(p)*cos(t)*tt)**2 + (cos(p)*pp*sin(t)+sin(p)*cos(t)*tt)**2 + (-sin(t)*tt)**2
+///
+}}}
+
+{{{id=8|
+latex(factor((-sin(p)*pp*sin(t) + cos(p)*cos(t)*tt)**2 + (cos(p)*pp*sin(t)+sin(p)*cos(t)*tt)**2 + (-sin(t)*tt)**2))
+///
+}}}
+
+{{{id=7|
+tt**2
+///
+}}}
+
 {{{id=2|
-mo=10;
+Ttemo=10;
 mr=0.2*mo;
 beta=0.12
 
@@ -42,7 +115,7 @@ dey = B
 deA = (A/(m(t)*l^2*sin(y)^2))*(eta*l*sin(y)^2-mdot(t)*l^2*sin(y)^2-2*m(t)*l*sin(y)*cos(y))
 deB = (1/(m(t)*l^2))*(eta*l^2*B-mdot(t)*l^2*B+m(t)*l^2*sin(y)*cos(y)*A^2+m(t)*g*l*sin(y))
 
-P=desolve_system_rk4([dex,dey,deA,deB],[x,y,A,B],ics=[0,xo,yo,ao,bo],ivar=t,end_points=tf,step=0.1)
+P=desolve_system_rk4([dex,dey,deA,deB],[x,y,A,B],ics=[0,xo,yo,ao,bo],ivar=t,end_points=tf,step=0.005)
 
 
 #Qt=[ [i,i] for i,j,k,m,n in P]
@@ -95,8 +168,6 @@ LPyz.show()
 
 LPvel.show()
 ///
-m(t)= 8.00000000000000*e^(-0.120000000000000*t) + 2.00000000000000
-mdot(t)= -0.960000000000000*e^(-0.120000000000000*t)
 }}}
 
 {{{id=3|
